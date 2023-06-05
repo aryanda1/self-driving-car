@@ -27,4 +27,11 @@ class Road {
       ctx.stroke();
     }
   }
+
+  //get the x position of the center of the particular lane
+  get_lane_center(laneIdx){
+    laneIdx = Math.max(0,Math.min(this.laneCount-1,laneIdx));
+    const laneWidth = this.width / this.laneCount;
+    return laneWidth/2 +  lerp(this.left, this.right, laneIdx / this.laneCount);
+  }
 }
