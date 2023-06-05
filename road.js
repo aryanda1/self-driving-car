@@ -9,21 +9,32 @@ class Road {
     this.bottom = infinity;
     this.left = x - width / 2;
     this.right = x + width / 2;
+
+    this.borders = [
+        [{ x: this.left, y: this.top },{ x: this.left, y: this.bottom }], //top border
+        [{ x: this.right, y: this.top },{ x: this.right, y: this.bottom }], //bottom border
+    ]
   }
   draw(ctx) {
     ctx.lineWidth = 5; //width of the road
     ctx.strokeStyle = "white"; //color of the road
 
-    for (let i = 0; i <= this.laneCount; i++) {
+    for (let i = 1; i < this.laneCount; i++) {
       const x = lerp(this.left, this.right, i / this.laneCount); //get x position of current lane
-      if (i > 0 && i < this.laneCount)
-        ctx.setLineDash([40, 10]); //draw dashed lines for lanes
-      else ctx.setLineDash([]); //draw solid lines for edges
+      ctx.setLineDash([40, 10]); //draw dashed lines for lanes
       
   
       ctx.beginPath();
       ctx.moveTo(x, this.top);
       ctx.lineTo(x, this.bottom);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]); //reset the line dash to solid line
+    for (let i = 0; i < this.borders.length; i++) {
+      const border = this.borders[i];
+      ctx.beginPath();
+      ctx.moveTo(border[0].x, border[0].y);
+      ctx.lineTo(border[1].x, border[1].y);
       ctx.stroke();
     }
   }
