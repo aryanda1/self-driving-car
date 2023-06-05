@@ -58,12 +58,12 @@ class Car {
 
     // Draw circles
     ctx.beginPath();
-    ctx.arc(-this.width / 2 + 8, -this.height / 2 - 4, 7, 0, 2 * Math.PI);
+    ctx.arc(-this.width / 2 + 8, -this.height / 2 - 4, 5, 0, 2 * Math.PI);
     ctx.fillStyle = "red";
     ctx.fill();
 
     ctx.beginPath();
-    ctx.arc(this.width / 2 - 8, -this.height / 2 - 4, 7, 0, 2 * Math.PI);
+    ctx.arc(this.width / 2 - 8, -this.height / 2 - 4, 5, 0, 2 * Math.PI);
     ctx.fillStyle = "red";
     ctx.fill();
 
