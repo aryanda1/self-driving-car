@@ -5,16 +5,16 @@ class Sensor {
     this.rayCount = 5;
     this.rayWidth = Math.PI / 2; //spread of total 3 rays
     this.rays = [];
-    this.readings = [];//stores the point of intersection of rays with border, if one exists else null
+    this.readings = []; //stores the point of intersection of rays with border, if one exists else null
   }
-  update(roadBorders) {
+  update(roadBorders, traffic) {
     this.#castRay();
     this.readings = [];
     for (let i = 0; i < this.rayCount; i++)
-      this.readings.push(this.#getReadings(this.rays[i], roadBorders));
+      this.readings.push(this.#getReadings(this.rays[i], roadBorders, traffic));
   }
 
-  #getReadings(ray, roadBorder) {
+  #getReadings(ray, roadBorder, traffic) {
     let curTouch = null;
     let curOffset = Infinity;
     for (let i = 0; i < roadBorder.length; i++) {
@@ -31,6 +31,22 @@ class Sensor {
         }
       }
     }
+    traffic.forEach((traf) => {
+      for (let i = 0; i < traf.poygon.length; i++) {
+        const touch = intersection(
+          ray[0],
+          ray[1],
+          traf.poygon[i],
+          traf.poygon[(i + 1) % traf.poygon.length]
+        );
+        if (touch) {
+          if (curOffset > touch.offset) {
+            curTouch = { x: touch.x, y: touch.y };
+            curOffset = touch.offset;
+          }
+        }
+      }
+    });
     return curTouch;
   }
   #castRay() {
@@ -61,7 +77,7 @@ class Sensor {
 
       ctx.stroke();
       ctx.beginPath();
-      ctx.strokeStyle = "black";
+      ctx.strokeStyle = "red";
       ctx.moveTo(end.x, end.y);
       ctx.lineTo(this.rays[i][1].x, this.rays[i][1].y);
 
