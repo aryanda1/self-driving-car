@@ -22,7 +22,6 @@ class Controls{
                     this.down = true;
                     break;
             }
-            console.table(this);
         }
         document.onkeyup=(e)=>{//add event listener when keys are release
             switch(e.key){
@@ -39,7 +38,6 @@ class Controls{
                     this.down = false;
                     break;
             }
-            console.table(this);
         }
     }
 }

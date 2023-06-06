@@ -16,9 +16,46 @@ class Car {
   }
 
   update(borders) {
-    this.sensor.update(borders);
     this.#move();
+    this.poygon = this.#createPolygon();
+    this.sensor.update(borders);
   }
+
+  #createPolygon() {
+    const points = [];
+    //regular pentagon
+    // const rad = Math.hypot(this.width, this.height) / 2;
+    // const angleIncrement = (2 * Math.PI) / 5; // Angle increment for each point
+  
+    // for (let i = 0; i < 5; i++) {
+    //   const angle = this.angle + Math.PI + i * angleIncrement; // Add Math.PI to reverse the direction
+    //   const x = this.x + Math.sin(angle) * rad;
+    //   const y = this.y + Math.cos(angle) * rad;
+    //   points.push({ x, y });
+    // }
+    const rad = Math.hypot(this.width, this.height) / 2;
+    const alpha = Math.atan2(this.width, this.height);
+    points.push({
+      x:this.x-Math.sin(this.angle-alpha)*rad,
+      y:this.y-Math.cos(this.angle-alpha)*rad
+    });
+    points.push({
+      x:this.x-Math.sin(this.angle+alpha)*rad,
+      y:this.y-Math.cos(this.angle+alpha)*rad
+    });
+    points.push({
+      x:this.x+Math.sin(this.angle-alpha)*rad,
+      y:this.y+Math.cos(this.angle-alpha)*rad
+    });
+    points.push({
+      x:this.x+Math.sin(this.angle+alpha)*rad,
+      y:this.y+Math.cos(this.angle+alpha)*rad
+    });
+
+    return points;
+  }
+  
+  
 
   #move() {
     if (this.controls.up) {
@@ -47,6 +84,7 @@ class Car {
       this.speed = 0;
     }
     if (this.speed != 0) {
+      console.table(this.poygon);
       const flip = this.speed > 0 ? 1 : -1;
       if (this.controls.left) {
         this.angle += 0.03 * flip;
@@ -60,29 +98,13 @@ class Car {
   }
 
   draw(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(-this.angle);
-
-    // Draw circles
     ctx.beginPath();
-    ctx.arc(-this.width / 2 + 8, -this.height / 2 - 4, 5, 0, 2 * Math.PI);
-    ctx.fillStyle = "red";
+    ctx.moveTo(this.poygon[0].x, this.poygon[0].y);
+    for (let i = 1; i < this.poygon.length; i++) {
+      ctx.lineTo(this.poygon[i].x, this.poygon[i].y);
+    }
     ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(this.width / 2 - 8, -this.height / 2 - 4, 5, 0, 2 * Math.PI);
-    ctx.fillStyle = "red";
-    ctx.fill();
-
-    // Draw rectangle
-    ctx.fillStyle = "black";
-    ctx.beginPath();
-    ctx.rect(-this.width / 2, -this.height / 2, this.width, this.height);
-    ctx.fill();
-    ctx.closePath();
-
-    ctx.restore();
     this.sensor.draw(ctx);
+    // ctx.restore();
   }
 }
