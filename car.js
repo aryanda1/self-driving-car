@@ -10,15 +10,27 @@ class Car {
     this.friction = 0.05;
     this.maxSpeed = 3;
     this.angle = 0;
+    this.damaged = false;
     this.sensor = new Sensor(this);
 
     this.controls = new Controls();
   }
 
   update(borders) {
+    if(!this.damaged){
     this.#move();
     this.poygon = this.#createPolygon();
+    this.damaged = this.#accessDamage(borders);
+  }
     this.sensor.update(borders);
+  }
+
+  #accessDamage(borders) {
+     for(let i=0;i<borders.length;i++){//pass individual border
+      if(polyIntersect(this.poygon,borders[i]))
+        return true;
+     }
+      return false;
   }
 
   #createPolygon() {
@@ -84,7 +96,6 @@ class Car {
       this.speed = 0;
     }
     if (this.speed != 0) {
-      console.table(this.poygon);
       const flip = this.speed > 0 ? 1 : -1;
       if (this.controls.left) {
         this.angle += 0.03 * flip;
@@ -98,6 +109,8 @@ class Car {
   }
 
   draw(ctx) {
+    if(this.damaged)
+      ctx.fillStyle = "red";
     ctx.beginPath();
     ctx.moveTo(this.poygon[0].x, this.poygon[0].y);
     for (let i = 1; i < this.poygon.length; i++) {
