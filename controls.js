@@ -1,9 +1,12 @@
 class Controls{
-    constructor(){
+    constructor(type="DUMMY"){
         this.left = false;
         this.right = false;
         this.up = false;
         this.down = false;
+        if (type === 'DUMMY')
+        this.up = true;
+        else
         this.#addKeyBoardListeners();//the hash makes it private
     }
     #addKeyBoardListeners(){
