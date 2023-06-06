@@ -26,7 +26,7 @@ class Sensor {
       );
       if (touch) {
         if (curOffset > touch.offset) {
-          curTouch = { x: touch.x, y: touch.y };
+          curTouch = touch;
           curOffset = touch.offset;
         }
       }
@@ -41,7 +41,7 @@ class Sensor {
         );
         if (touch) {
           if (curOffset > touch.offset) {
-            curTouch = { x: touch.x, y: touch.y };
+            curTouch = touch;
             curOffset = touch.offset;
           }
         }
