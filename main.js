@@ -8,10 +8,10 @@ const traffic = [
     new Car(road.get_lane_center(0),150,30,50,"DUMMY",2)
 ];
 function animate(){
-    car.update(road.borders);
     traffic.forEach(traf => {
-        traf.update(road.borders);
+        traf.update(road.borders,[]);
     });
+    car.update(road.borders,traffic);
     canvas.height = window.innerHeight;//by resetting height each time, the previous drawn rectangle also gets cleared
     ctx.save()
     ctx.translate(0,-car.y+canvas.height*0.7);//translate the canvas so that the road moves but not the car, like a drone camera following the car

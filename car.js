@@ -18,21 +18,25 @@ class Car {
     this.controls = new Controls(type);
   }
 
-  update(borders) {
+  update(borders,traffic) {
     if(!this.damaged){
     this.#move();
     this.poygon = this.#createPolygon();
-    this.damaged = this.#accessDamage(borders);
+    this.damaged = this.#accessDamage(borders,traffic);
+
   }
     if(this.sensor)
-    this.sensor.update(borders);
+    this.sensor.update(borders,traffic);
   }
 
-  #accessDamage(borders) {
-     for(let i=0;i<borders.length;i++){//pass individual border
+  #accessDamage(borders,traffic) {
+     for(let i=0;i<borders.length;i++)//pass individual border
       if(polyIntersect(this.poygon,borders[i]))
         return true;
-     }
+     for(let i=0;i<traffic.length;i++)//pass individual border
+      if(polyIntersect(this.poygon,traffic[i].poygon))
+        return true;
+     
       return false;
   }
 
