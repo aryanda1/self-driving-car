@@ -19,6 +19,9 @@ class Car {
     }
 
     this.controls = new Controls(type);
+
+    this.img = new Image();
+    this.img.src="car.png";
   }
 
   update(borders, traffic) {
@@ -134,15 +137,24 @@ class Car {
   }
 
   draw(ctx,bestCar=false) {
-    ctx.fillStyle = this.sensor?'blue':'black';
-    if (this.damaged) ctx.fillStyle = "gray";
-    ctx.beginPath();
+    // ctx.fillStyle = this.sensor?'blue':'black';
+    // if (this.damaged) ctx.fillStyle = "gray";
+    // ctx.beginPath();
 
-    ctx.moveTo(this.poygon[0].x, this.poygon[0].y);
-    for (let i = 1; i < this.poygon.length; i++) {
-      ctx.lineTo(this.poygon[i].x, this.poygon[i].y);
-    }
-    ctx.fill();
+    // ctx.moveTo(this.poygon[0].x, this.poygon[0].y);
+    // for (let i = 1; i < this.poygon.length; i++) {
+    //   ctx.lineTo(this.poygon[i].x, this.poygon[i].y);
+    // }
+    // ctx.fill();
+    ctx.save();
+    ctx.translate(this.x,this.y);
+    ctx.rotate(-this.angle);
+    ctx.drawImage(this.img,
+      -this.width/2,
+      -this.height/2,
+      this.width,
+      this.height);
+    ctx.restore();
     if (this.sensor && bestCar) this.sensor.draw(ctx);
     // ctx.restore();
   }
