@@ -13,7 +13,8 @@ class Car {
     this.damaged = false;
     this.useBrain = type == "AI";
 
-    if (type != "DUMMY") {this.sensor = new Sensor(this);
+    if (type != "DUMMY") {
+      this.sensor = new Sensor(this);
       this.brain = new NeuralNetwrok([this.sensor.rayCount, 6, 4]);
     }
 
@@ -25,19 +26,19 @@ class Car {
       this.#move();
       this.poygon = this.#createPolygon();
       this.damaged = this.#accessDamage(borders, traffic);
-    }
-    if (this.sensor) {
-      this.sensor.update(borders, traffic);
-      const offset = this.sensor.readings.map((reading) =>
-        reading ? 1 - reading.offset : 0//giving a low value when offset is more,i.e, more distance from collisions, getting high value when car is getting crashed
-      );
-      const outputs = NeuralNetwrok.feedForward(offset, this.brain);
-      if (this.useBrain) {
-        // console.log(outputs);
-        this.controls.left = outputs[0];
-        this.controls.right = outputs[1];
-        this.controls.up = outputs[2];
-        this.controls.down = outputs[3];
+      if (this.sensor) {
+        this.sensor.update(borders, traffic);
+        const offset = this.sensor.readings.map(
+          (reading) => (reading ? 1 - reading.offset : 0) //giving a low value when offset is more,i.e, more distance from collisions, getting high value when car is getting crashed
+        );
+        const outputs = NeuralNetwrok.feedForward(offset, this.brain);
+        if (this.useBrain) {
+          // console.log(outputs);
+          this.controls.left = outputs[0];
+          this.controls.right = outputs[1];
+          this.controls.up = outputs[2];
+          this.controls.down = outputs[3];
+        }
       }
     }
   }
@@ -132,15 +133,17 @@ class Car {
     this.y -= Math.cos(this.angle) * this.speed;
   }
 
-  draw(ctx) {
-    if (this.damaged) ctx.fillStyle = "red";
+  draw(ctx,bestCar=false) {
+    ctx.fillStyle = this.sensor?'blue':'black';
+    if (this.damaged) ctx.fillStyle = "gray";
     ctx.beginPath();
+
     ctx.moveTo(this.poygon[0].x, this.poygon[0].y);
     for (let i = 1; i < this.poygon.length; i++) {
       ctx.lineTo(this.poygon[i].x, this.poygon[i].y);
     }
     ctx.fill();
-    if (this.sensor) this.sensor.draw(ctx);
+    if (this.sensor && bestCar) this.sensor.draw(ctx);
     // ctx.restore();
   }
 }
