@@ -5,13 +5,26 @@ class NeuralNetwrok {
       this.levels[i - 1] = new Level(neuralCounts[i - 1], neuralCounts[i]);
   }
   static feedForward(givenInputs, network) {
-    for(let i = 0; i < givenInputs.length; i++)
+    for (let i = 0; i < givenInputs.length; i++)
       network.levels[0].inputs[i] = givenInputs[i];
     let output = Level.feedForward(givenInputs, network.levels[0]);
     for (let i = 1; i < network.levels.length; i++) {
       output = Level.feedForward(output, network.levels[i]);
     }
     return output;
+  }
+
+  static mutate(netwrok, amount = 1) {
+    netwrok.levels.forEach((level) => {
+      level.weights.forEach((row) => {
+        row.forEach((weight, i) => {
+          row[i] = lerp(weight, Math.random() * 2 - 1, amount);
+        });
+      });
+      level.biases.forEach((bias, i) => {
+        level.biases[i] = lerp(bias, Math.random() * 2 - 1, amount);
+      });
+    });
   }
 }
 
@@ -26,7 +39,7 @@ class Level {
     Level.#randomize(this);
   }
   static #randomize(level) {
-    for (let i = 0; i < level.inputs.length; i++) 
+    for (let i = 0; i < level.inputs.length; i++)
       for (let j = 0; j < level.outputs.length; j++)
         level.weights[i][j] = Math.random() * 2 - 1;
     for (let i = 0; i < level.outputs.length; i++)
