@@ -7,12 +7,16 @@ const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
-const N = 1000;
+const N = 1;
 const cars = generate_cars(N); //x,y,width,height
 const traffic = [
   new Car(road.get_lane_center(1), 0, 30, 50, "DUMMY", 2),
   new Car(road.get_lane_center(0), -200, 30, 50, "DUMMY", 2),
   new Car(road.get_lane_center(2), -200, 30, 50, "DUMMY", 2),
+  new Car(road.get_lane_center(0), -500, 30, 50, "DUMMY", 2),
+  new Car(road.get_lane_center(1), -500, 30, 50, "DUMMY", 2),
+  new Car(road.get_lane_center(1), -700, 30, 50, "DUMMY", 2),
+  new Car(road.get_lane_center(2), -700, 30, 50, "DUMMY", 2),
 ];
 
 function generate_cars(N) {
@@ -23,7 +27,11 @@ function generate_cars(N) {
 }
 let bestCar = cars[0];
 if (localStorage.getItem("Brain")) {
-  bestCar.brain = JSON.parse(localStorage.getItem("Brain"));
+  cars.forEach((car,i)=> {
+    car.brain = JSON.parse(localStorage.getItem("Brain"));
+    if(i!=0)
+    NeuralNetwrok.mutate(car.brain,0.1);
+  });
 }
 //The request animation frame also gives the time as parameter
 
