@@ -13,8 +13,7 @@ class Car {
     this.damaged = false;
     this.useBrain = type == "AI";
 
-    if (type != "DUMMY") this.sensor = new Sensor(this);
-    if (type == "AI") {
+    if (type != "DUMMY") {this.sensor = new Sensor(this);
       this.brain = new NeuralNetwrok([this.sensor.rayCount, 6, 4]);
     }
 
@@ -29,17 +28,17 @@ class Car {
     }
     if (this.sensor) {
       this.sensor.update(borders, traffic);
-    }
-    if (this.useBrain) {
       const offset = this.sensor.readings.map((reading) =>
         reading ? 1 - reading.offset : 0//giving a low value when offset is more,i.e, more distance from collisions, getting high value when car is getting crashed
       );
       const outputs = NeuralNetwrok.feedForward(offset, this.brain);
-      // console.log(outputs);
-      this.controls.left = outputs[0];
-      this.controls.right = outputs[1];
-      this.controls.up = outputs[2];
-      this.controls.down = outputs[3];
+      if (this.useBrain) {
+        // console.log(outputs);
+        this.controls.left = outputs[0];
+        this.controls.right = outputs[1];
+        this.controls.up = outputs[2];
+        this.controls.down = outputs[3];
+      }
     }
   }
 
