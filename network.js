@@ -5,8 +5,9 @@ class NeuralNetwrok {
       this.levels[i - 1] = new Level(neuralCounts[i - 1], neuralCounts[i]);
   }
   static feedForward(givenInputs, network) {
+    for(let i = 0; i < givenInputs.length; i++)
+      network.levels[0].inputs[i] = givenInputs[i];
     let output = Level.feedForward(givenInputs, network.levels[0]);
-    // console.log("t");
     for (let i = 1; i < network.levels.length; i++) {
       output = Level.feedForward(output, network.levels[i]);
     }
@@ -25,11 +26,11 @@ class Level {
     Level.#randomize(this);
   }
   static #randomize(level) {
-    for (let i = 0; i < level.inputs.length; i++) {
+    for (let i = 0; i < level.inputs.length; i++) 
       for (let j = 0; j < level.outputs.length; j++)
         level.weights[i][j] = Math.random() * 2 - 1;
+    for (let i = 0; i < level.outputs.length; i++)
       level.biases[i] = Math.random() * 2 - 1;
-    }
   }
   static feedForward(givenInputs, level) {
     for (let i = 0; i < level.outputs.length; i++) {
