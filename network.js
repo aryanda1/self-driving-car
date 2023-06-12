@@ -9,7 +9,11 @@ class NeuralNetwrok {
       network.levels[0].inputs[i] = givenInputs[i];
     let output = Level.feedForward(givenInputs, network.levels[0]);
     for (let i = 1; i < network.levels.length; i++) {
-      output = Level.feedForward(output, network.levels[i]);
+      output = Level.feedForward(
+        output,
+        network.levels[i],
+        i == network.levels.length - 1
+      );
     }
     return output;
   }
@@ -45,13 +49,16 @@ class Level {
     for (let i = 0; i < level.outputs.length; i++)
       level.biases[i] = Math.random() * 2 - 1;
   }
-  static feedForward(givenInputs, level) {
+  static feedForward(givenInputs, level, last = false) {
     for (let i = 0; i < level.outputs.length; i++) {
       let sum = 0;
       for (let j = 0; j < level.inputs.length; j++)
         sum += givenInputs[j] * level.weights[j][i];
-      if (sum + level.biases[i] > 0) level.outputs[i] = 1;
-      else level.outputs[i] = 0;
+      if (last) level.outputs[i] = sum + level.biases[i] > 0 ? 1 : 0;
+      else {
+        let activation = relu(sum + level.biases[i]);
+        level.outputs[i] = activation;
+      }
     }
     return level.outputs;
   }
