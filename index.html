@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Self Driving Cars</title>
-    <link rel="stylesheet" href="style.css" >
-</head>
-<body>
-    <canvas id="carCanvas"></canvas>
-    <div id ="verticalButtons">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="overlay">
+      <div id="modal">
+        <div id="modal-text">
+          <h2 id="mediaTitle">START</h2>
+          <p id="mediaMessage">Press Enter to start</p>
+        </div>
+      </div>
+    </div>
+    <div id="canvas">
+      <div id="maxDistanceContainer">
+        <div id="maxDistanceLabel">Max Distance:</div>
+        <div id="maxDistanceValue">0</div>
+      </div>
+      <canvas id="carCanvas"></canvas>
+      <div id="verticalButtons">
         <button onclick="save()">💾</button>
         <button onclick="discard()">🗑️</button>
+      </div>
+      <canvas id="networkCanvas"></canvas>
     </div>
-    <canvas id="networkCanvas"></canvas>
     <script src="controls.js"></script>
     <script src="visualizer.js"></script>
     <script src="network.js"></script>
@@ -22,5 +36,5 @@
     <script src="car.js"></script>
     <script src="road.js"></script>
     <script src="main.js"></script>
-</body>
+  </body>
 </html>

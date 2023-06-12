@@ -7,34 +7,40 @@ const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 
-const N = 1;
-const cars = generate_cars(N); //x,y,width,height
-let traffic = [
-  new Car(road.get_lane_center(1), 0, 30, 50, "DUMMY", 2, getRandomColor()),
-  new Car(road.get_lane_center(0), -200, 30, 50, "DUMMY", 2, getRandomColor()),
-  new Car(road.get_lane_center(2), -200, 30, 50, "DUMMY", 2, getRandomColor()),
-  new Car(road.get_lane_center(0), -500, 30, 50, "DUMMY", 2, getRandomColor()),
-  new Car(road.get_lane_center(1), -500, 30, 50, "DUMMY", 2, getRandomColor()),
-  new Car(road.get_lane_center(1), -700, 30, 50, "DUMMY", 2, getRandomColor()),
-  new Car(road.get_lane_center(2), -700, 30, 50, "DUMMY", 2, getRandomColor()),
-];
-
+const N = 1000;
+let cars = [],
+  traffic = [],
+  bestCar;
 const max_traffic_Cars = 7;
+let countofUndamaged = N;
+function init() {
+  cars = generate_cars(N); //x,y,width,height
+  traffic = [
+    new Car(road.get_lane_center(1), 0, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.get_lane_center(0), -200, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.get_lane_center(2), -200, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.get_lane_center(0), -500, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.get_lane_center(1), -500, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.get_lane_center(1), -700, 30, 50, "DUMMY", 2, getRandomColor()),
+    new Car(road.get_lane_center(2), -700, 30, 50, "DUMMY", 2, getRandomColor()),
+  ];
 
-function generate_cars(N) {
-  const cars = [];
-  for (let i = 1; i <= N; i++)
-    cars.push(new Car(road.get_lane_center(1), 100, 30, 50, "AI"));
-  return cars;
+  function generate_cars(N) {
+    const cars = [];
+    for (let i = 1; i <= N; i++)
+      cars.push(new Car(road.get_lane_center(1), 100, 30, 50, "AI"));
+    return cars;
+  }
+  bestCar = cars[0];
+  if (localStorage.getItem("Brain")) {
+    cars.forEach((car, i) => {
+      car.brain = JSON.parse(localStorage.getItem("Brain"));
+      if (i != 0) NeuralNetwrok.mutate(car.brain, 0.2);
+    });
+  }
 }
-let bestCar = cars[0];
-if (localStorage.getItem("Brain")) {
-  cars.forEach((car,i)=> {
-    car.brain = JSON.parse(localStorage.getItem("Brain"));
-    if(i!=0)
-    NeuralNetwrok.mutate(car.brain,0.15);
-  });
-}
+
+init();
 //The request animation frame also gives the time as parameter
 
 function save() {
@@ -45,10 +51,12 @@ console.log(bestCar.brain);
 function discard() {
   localStorage.removeItem("Brain");
 }
-
+let flag = 0;
+let firstTIme = 1;
+let animationId = 1;
+const scale =  0.0762 / 250;
 function animate(time) {
-  
-  traffic = traffic.filter((traf) => traf.y < bestCar.y+400);
+  traffic = traffic.filter((traf) => traf.y < bestCar.y + 400);
   while (traffic.length < max_traffic_Cars) {
     let i = 200;
     // Generate new traffic car
@@ -57,7 +65,7 @@ function animate(time) {
     const mainCar = bestCar; // Assuming the main car is at index 0
     const newTrafficCar = new Car(
       laneCenter,
-      mainCar.y - carCanvas.height -i, // Start above the main car, adjust the value as needed
+      mainCar.y - carCanvas.height - i, // Start above the main car, adjust the value as needed
       30,
       50,
       "DUMMY",
@@ -66,7 +74,7 @@ function animate(time) {
     );
     // console.log(newTrafficCar)
     traffic.push(newTrafficCar);
-    i+=400;
+    i += 400;
   }
   traffic.forEach((traf) => {
     traf.update(road.borders, []);
@@ -74,6 +82,8 @@ function animate(time) {
   });
 
   cars.forEach((car) => car.update(road.borders, traffic));
+  countofUndamaged = cars.reduce((cnt, cur) => cnt + !cur.damaged, 0);
+  if (countofUndamaged == 0) pauseAnimation("Reset");
 
   const maxHt = cars.reduce((minn, cur) => Math.min(cur.y, minn), Infinity);
   bestCar = cars.find((car) => car.y == maxHt);
@@ -94,8 +104,48 @@ function animate(time) {
   carCtx.restore();
   networkCtx.lineDashOffset = -time / 50;
   Visualizer.drawNetwrok(networkCtx, bestCar.brain);
-  requestAnimationFrame(animate);
+  if (flag || (firstTIme && time > 120)) {
+    flag = 1;
+    firstTIme = 0;
+    return;
+  }
+  maxDistanceValue.textContent = Math.round(scale*(-bestCar.y+100));
+  animationId = requestAnimationFrame(animate);
 }
 // setInterval(animate,1000/60);//can use setInterval or requestAnimationFrame to animate
 
-animate();
+requestAnimationFrame(animate);
+
+function startAnimation() {
+  flag = false;
+  overlay.style.display = "none";
+  animate();
+}
+
+function pauseAnimation(type = "") {
+  flag = true;
+  overlay.style.display = "flex";
+  mediaTitle.textContent = type ? "LOST" : "PAUSED";
+  mediaMessage.textContent = type
+    ? "Press R to restart"
+    : "Press Enter to Resume or R for restart";
+}
+
+function reset() {
+  // flag = 1;
+  cancelAnimationFrame(animationId);
+  overlay.style.display = "none";
+  init();
+  flag = false;
+  animate();
+}
+
+document.addEventListener("keydown", (e) => {
+  if (e.key == "Enter" && countofUndamaged) {
+    mediaTitle.textContent = "PAUSED";
+    mediaMessage.textContent = "Press Enter to Resume or R for restart";
+    if (!flag) pauseAnimation();
+    else startAnimation();
+  }
+  if (e.key == "r" && mediaTitle.textContent != "START") reset();
+});
