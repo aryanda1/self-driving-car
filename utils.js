@@ -40,3 +40,16 @@ function getRGBA(value){
   const R = value>0?255:0;
   return `rgba(${R},${G},${B},${alpha})`;
 }
+
+function getRandomColor(){
+  const hue = 290 + Math.random()*260;//gives all hues which can make any color other than blue, as our main color is blue
+  return `hsl(${hue}, 100%,60%)`;
+}
+
+function sigmoid(x) {
+  return 1 / (1 + Math.exp(-x));
+}
+
+function relu(x) {
+  return Math.max(0, x);
+}
