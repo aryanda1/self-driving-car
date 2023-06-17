@@ -57,3 +57,7 @@ function relu(x) {
 function LreLU(x) {
   return x < 0 ? 0.01 * x : x;
 }
+
+function round(value, decimals) {
+  return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+}
