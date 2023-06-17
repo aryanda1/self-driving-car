@@ -23,7 +23,7 @@ class Car {
 
     if (type != "DUMMY") {
       this.sensor = new Sensor(this);
-      this.brain = new NeuralNetwrok([this.sensor.rayCount, 6, 4]);
+      this.brain = new NeuralNetwrok([this.sensor.rayCount, 8, 4]);
     }
 
     this.controls = new Controls(type);
