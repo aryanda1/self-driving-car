@@ -56,7 +56,7 @@ class Level {
         sum += givenInputs[j] * level.weights[j][i];
       if (last) level.outputs[i] = sum + level.biases[i] > 0 ? 1 : 0;
       else {
-        let activation = relu(sum + level.biases[i]);
+        let activation = LreLU(sum + level.biases[i]);
         level.outputs[i] = activation;
       }
     }

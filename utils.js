@@ -53,3 +53,7 @@ function sigmoid(x) {
 function relu(x) {
   return Math.max(0, x);
 }
+
+function LreLU(x) {
+  return x < 0 ? 0.01 * x : x;
+}
