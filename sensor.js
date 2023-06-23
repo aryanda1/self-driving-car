@@ -1,9 +1,9 @@
 class Sensor {
-  constructor(car) {
+  constructor(car,length=120,rayCount=6,rayWidth=0.5) {
     this.car = car;
-    this.length = 120;
-    this.rayCount = 6;
-    this.rayWidth = Math.PI / 2; //spread of total 3 rays
+    this.length = length;
+    this.rayCount = rayCount;
+    this.rayWidth = Math.PI * rayWidth; //spread of total 3 rays
     this.rays = [];
     this.readings = []; //stores the point of intersection of rays with border, if one exists else null
   }

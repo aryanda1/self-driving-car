@@ -35,7 +35,6 @@ class Counter {
   }
 
   draw(ctx,number,maxNumber){
-    console.log(number);
       this.#drawNumber(ctx,maxNumber,20,50,"Max Score");
       this.#drawNumber(ctx,number,20,120,"Score");
   }
