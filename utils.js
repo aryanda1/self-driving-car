@@ -46,6 +46,12 @@ function getRandomColor(){
   return `hsl(${hue}, 100%,60%)`;
 }
 
+function getRandomColor2(excludeColor) {
+  let hue = excludeColor+40 + Math.random()*260;
+  return `hsl(${hue}, 100%, 60%)`;
+}
+
+
 function sigmoid(x) {
   return 1 / (1 + Math.exp(-x));
 }
@@ -60,4 +66,8 @@ function LreLU(x) {
 
 function round(value, decimals) {
   return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
+}
+
+function getRandom(n){
+  return Math.floor(Math.random() * n);
 }
