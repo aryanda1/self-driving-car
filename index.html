@@ -7,8 +7,169 @@
     <title>Self Driving Cars</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <div id="overlay">
+  <body class="padding">
+    <form onsubmit="submitHandler(event)" class="">
+      <fieldset>
+        <legend>Car</legend>
+        <label for="height">Height:</label>
+        <input required type="number" id="height" name="height" placeholder="40" />
+    
+        <label for="width">Width:</label>
+        <input required type="number" id="width" name="width" placeholder="20" />
+    
+        <label for="maxSpeed">Max Speed:</label>
+        <input
+          required
+          type="number"
+          id="maxSpeed"
+          name="maxSpeed"
+          placeholder="5"
+        />
+    
+        <label for="carType">Type of Car:</label>
+        <select id="carType" name="carType">
+          <option value="AI">AI</option>
+          <option value="KEYS">Keys</option>
+        </select>
+        <label for="carColor">Color of Car:</label>
+        <select id="carColor">
+          <option value="red">Red</option>
+          <option value="green">Green</option>
+          <option value="blue">Blue</option>
+          <option value="yellow">Yellow</option>
+          <option value="orange">Orange</option>
+          <option value="purple">Purple</option>
+          <option value="pink">Pink</option>
+          <option value="brown">Brown</option>
+        </select>
+      </fieldset>
+    
+      <fieldset>
+        <legend>Network</legend>
+        <label for="alpha">Alpha:</label>
+        <input
+          required
+          type="number"
+          id="alpha"
+          name="alpha"
+          placeholder="0.1"
+          max="1"
+          min="0"
+          step="0.01"
+          value="0.1"
+        />
+    
+        <label for="intermediates">Intermediates:</label>
+        <input
+          required
+          type="text"
+          id="intermediates"
+          name="intermediates"
+          placeholder="4,5"
+        />
+      </fieldset>
+    
+      <fieldset>
+        <legend>Road</legend>
+        <label for="lanes">Number of Lanes:</label>
+        <input required type="number" id="lanes" name="lanes" placeholder="4" />
+      </fieldset>
+    
+      <fieldset>
+        <legend>Sensor</legend>
+        <label for="sensorLength">Length of Sensor:</label>
+        <input
+          required
+          type="number"
+          id="sensorLength"
+          name="sensorLength"
+          placeholder="100"
+        />
+    
+        <label for="sensorRays">Number of Rays:</label>
+        <input
+          required
+          type="number"
+          id="sensorRays"
+          name="sensorRays"
+          placeholder="3"
+        />
+    
+        <label for="sensorSpread">Total Spread:</label>
+        <input
+          required
+          type="number"
+          id="sensorSpread"
+          name="sensorSpread"
+          placeholder="0.5"
+          min="0"
+          max="2"
+          step="0.1"
+        />
+      </fieldset>
+    
+      <fieldset>
+        <legend>Car Canvas</legend>
+        <label for="carCanvasWidth">Width:</label>
+        <input
+          required
+          type="number"
+          id="carCanvasWidth"
+          name="carCanvasWidth"
+          placeholder="300"
+        />
+      </fieldset>
+    
+      <fieldset>
+        <legend>Network Canvas</legend>
+        <label for="networkCanvasWidth">Width:</label>
+        <input
+          required
+          type="number"
+          id="networkCanvasWidth"
+          name="networkCanvasWidth"
+          placeholder="300"
+        />
+      </fieldset>
+    
+      <fieldset>
+        <legend>Options</legend>
+        <label for="bestConfig">
+          <input
+            type="checkbox"
+            id="bestConfig"
+            name="bestConfig"
+            onchange="handleBestConfigChange()"
+          />
+          Use Best Config
+        </label>
+        <label for="bestBrain">
+          <input
+            type="checkbox"
+            id="bestBrain"
+            name="bestBrain"
+            onchange="handleBestBrain()"
+          />
+          Use Best Brain
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Number of Cars</legend>
+        <label for="numberCars">
+          <input
+            type="number"
+            id="numberCars"
+            name="numberCars"
+            placeholder="1"
+            value="1"
+          />
+        </label>
+      </fieldset>
+      <div id="submit">
+        <button type="submit">Submit</button>
+      </div>
+    </form>
+    <div id="overlay" class="hidden">
       <div id="modal">
         <div id="modal-text">
           <h2 id="mediaTitle">START</h2>
@@ -16,7 +177,7 @@
         </div>
       </div>
     </div>
-    <div id="canvas">
+    <div id="canvas" class="hidden">
       <canvas id="scoreCanvas"></canvas>
       <canvas id="carCanvas"></canvas>
       <div id="verticalButtons">
@@ -33,6 +194,7 @@
     <script src="car.js"></script>
     <script src="road.js"></script>
     <script src="counter.js"></script>
+    <script src="input.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
