@@ -6,7 +6,11 @@ class Car {
     height,
     type = "DUMMY",
     maxSpeed = 3,
-    color = "blue"
+    color = "blue",
+    sensorLength=undefined,
+    sensorRays = undefined,
+    sensorSpread = undefined,
+    intermediatesNeurons = undefined,
   ) {
     this.x = x;
     this.y = y;
@@ -22,8 +26,9 @@ class Car {
     this.useBrain = type == "AI";
 
     if (type != "DUMMY") {
-      this.sensor = new Sensor(this);
-      this.brain = new NeuralNetwrok([this.sensor.rayCount, 8, 4]);
+      this.sensor = new Sensor(this,sensorLength,sensorRays,sensorSpread);
+      console.log(intermediatesNeurons);
+      this.brain = new NeuralNetwrok([this.sensor.rayCount, ...intermediatesNeurons, 4]);
     }
 
     this.controls = new Controls(type);
