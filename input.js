@@ -1,6 +1,6 @@
-const carHeght = document.getElementById("height");
-const carWidth = document.getElementById("width");
-const carMaxSpeed = document.getElementById("maxSpeed");
+const carHeght = document.getElementById("carHeight");
+const carWidth = document.getElementById("carWidth");
+const carMaxSpeed = document.getElementById("carMaxSpeed");
 
 const networkAlpha = document.getElementById("alpha");
 const networkIntermediates = document.getElementById("intermediates");
@@ -10,27 +10,32 @@ const roadLanes = document.getElementById("lanes");
 const sensorLength = document.getElementById("sensorLength");
 const sensorRays = document.getElementById("sensorRays");
 const sensorSpread = document.getElementById("sensorSpread");
+const carCanvasWidth = document.getElementById("carCanvasWidth");
 
-function loadValuesFromJson(file) {
+const localStorageVars = ["numberCars","alpha","sensorSpread","intermediates","carType","lanes",
+                          "networkCanvasWidth","sensorLength","sensorRays","carCanvasWidth",
+                          "bestBrain","carHeight","carWidth","carMaxSpeed","carColor"
+                        ];
+
+function loadValuesFromJson() {
   fetch("best_config.json")
     .then((response) => response.json())
     .then((jsonData) => {
       // Do something with the loaded JSON data
-      console.log(document.getElementById("height"));
-      document.getElementById("height").value = jsonData.car.height;
-      document.getElementById("width").value = jsonData.car.width;
-      document.getElementById("maxSpeed").value = jsonData.car.maxSpeed;
+      carHeght.value = jsonData.car.height;
+      carWidth.value = jsonData.car.width;
+      carMaxSpeed.value = jsonData.car.maxSpeed;
 
-      document.getElementById("intermediates").value =
+      networkIntermediates.value =
         jsonData.network.intermediate_neurons;
 
-      document.getElementById("lanes").value = jsonData.road.laneCount;
+      roadLanes.value = jsonData.road.laneCount;
 
-      document.getElementById("sensorLength").value = jsonData.sensor.length;
-      document.getElementById("sensorRays").value = jsonData.sensor.rayCount;
-      document.getElementById("sensorSpread").value = jsonData.sensor.raySpread;
+      sensorLength.value = jsonData.sensor.length;
+      sensorRays.value = jsonData.sensor.rayCount;
+      sensorSpread.value = jsonData.sensor.raySpread;
 
-      document.getElementById("carCanvasWidth").value = 200;
+      carCanvasWidth.value = 200;
 
       document.getElementById("networkCanvasWidth").value = 300;
     })
@@ -43,121 +48,72 @@ function loadValuesFromJson(file) {
 
 function handleBestConfigChange() {
   const bestConfigCheckbox = document.getElementById("bestConfig");
-  const form = document.querySelector("form");
   if (bestConfigCheckbox.checked) {
     loadValuesFromJson();
-  } else {
-    form.reset();
   }
 }
 
 function handleBestBrain() {
   const bestBrainCheckbox = document.getElementById("bestBrain");
-  const form = document.querySelector("form");
   if (bestBrainCheckbox.checked) {
-    loadValuesFromJson();
-  } else {
-    form.reset();
+    fetch("best_config.json")
+    .then((response) => response.json())
+    .then((jsonData) => {
+      document.getElementById("sensorRays").value = jsonData.sensor.rayCount;
+      document.getElementById("intermediates").value =
+        jsonData.network.intermediate_neurons;
+    })
   }
   networkIntermediates.disabled = bestBrainCheckbox.checked;
   sensorRays.disabled = bestBrainCheckbox.checked;
 }
 function submitHandler(e) {
   e.preventDefault();
-  console.log("submit");
   try {
-    localStorage.setItem(
-      "carHeight",
-      JSON.stringify(Number(document.getElementById("height").value))
-    );
-    localStorage.setItem(
-      "carWidth",
-      JSON.stringify(Number(document.getElementById("width").value))
-    );
-    localStorage.setItem(
-      "carMaxSpeed",
-      JSON.stringify(Number(document.getElementById("maxSpeed").value))
-    );
-    localStorage.setItem(
-      "carType",
-      JSON.stringify(document.getElementById("carType").value)
-    );
-    localStorage.setItem(
-      "alpha",
-      JSON.stringify(Number(document.getElementById("alpha").value))
-    );
-    localStorage.setItem(
-      "intermediates",
-      JSON.stringify(document.getElementById("intermediates").value)
-    );
-    localStorage.setItem(
-      "lanes",
-      JSON.stringify(Number(document.getElementById("lanes").value))
-    );
-    localStorage.setItem(
-      "sensorLength",
-      JSON.stringify(Number(document.getElementById("sensorLength").value))
-    );
-    localStorage.setItem(
-      "sensorRays",
-      JSON.stringify(Number(document.getElementById("sensorRays").value))
-    );
-    localStorage.setItem(
-      "sensorSpread",
-      JSON.stringify(Number(document.getElementById("sensorSpread").value))
-    );
-    localStorage.setItem(
-      "carCanvasWidth",
-      JSON.stringify(Number(document.getElementById("carCanvasWidth").value))
-    );
-    localStorage.setItem(
-      "networkCanvasWidth",
-      JSON.stringify(
-        Number(document.getElementById("networkCanvasWidth").value)
-      )
-    );
-    localStorage.setItem(
-      "bestBrain",
-      JSON.stringify(document.getElementById("bestBrain").checked)
-    );
-    localStorage.setItem(
-      "numberCars",
-      JSON.stringify(Number(document.getElementById("numberCars").value))
-    );
-    localStorage.setItem(
-      "carColor",
-      JSON.stringify(document.getElementById("carColor").value)
-    );
-
+    localStorageVars.forEach(localVar => {
+      if (localVar!='carType' && localVar!='bestBrain' && localVar!='carColor' && localVar!='intermediates')
+      localStorage.setItem(localVar,JSON.stringify(Number(document.getElementById(localVar).value)))
+      else if(localVar!='bestBrain')
+      localStorage.setItem(localVar,JSON.stringify(document.getElementById(localVar).value))
+      else
+      localStorage.setItem(localVar,JSON.stringify(document.getElementById(localVar).checked))
+    
+    });
     switchBackToCanvas(getInputsFromLocal());
   } catch (error) {
     console.error("Error:", error);
   }
 }
 
-function getInputsFromLocal() {
-  const localStorageVars = [
-    "numberCars",
-    "alpha",
-    "sensorSpread",
-    "intermediates",
-    "carType",
-    "lanes",
-    "networkCanvasWidth",
-    "sensorLength",
-    "sensorRays",
-    "carCanvasWidth",
-    "bestBrain",
-    "carHeight",
-    "carWidth",
-    "carMaxSpeed",
-    "carColor",
-  ];
+function inputsChangeHandler(){
+  const bestConfigCheckbox = document.getElementById("bestConfig");
+  bestConfigCheckbox.checked = false;
+}
 
-  for (let i = 0; i < localStorageVars.length; i++)
-    if (localStorage.getItem(localStorageVars[i]) === null) {
-      return -1;
-    }
+carHeght.addEventListener("change", inputsChangeHandler);
+carWidth.addEventListener("change", inputsChangeHandler);
+carMaxSpeed.addEventListener("change", inputsChangeHandler);
+
+networkIntermediates.addEventListener("change", inputsChangeHandler);
+
+roadLanes.addEventListener("change", inputsChangeHandler);
+
+sensorLength.addEventListener("change", inputsChangeHandler);
+sensorRays.addEventListener("change", inputsChangeHandler);
+sensorSpread.addEventListener("change", inputsChangeHandler);
+carCanvasWidth.addEventListener("change", inputsChangeHandler);
+
+function getInputsFromLocal() {
+  let isundefined = false;
+  localStorageVars.forEach(localVar => {
+    if(localStorage.getItem(localVar)===null) isundefined = true;
+    else {
+      if(localVar!='bestBrain')
+      document.getElementById(localVar).value = JSON.parse(localStorage.getItem(localVar));
+      else
+      document.getElementById(localVar).checked = JSON.parse(localStorage.getItem(localVar));}
+  });
+  if(isundefined) return -1;
 
   const obj = localStorageVars.reduce((acc, key) => {
     acc[key] = JSON.parse(localStorage.getItem(key)); // Get value from localStorage
@@ -170,7 +126,7 @@ function getInputsFromLocal() {
 //different colors hue value so that they can be excluded for traffic
 const colors = {
   red: 0,
-  green: 120,
+  green: 100,
   blue: 240,
   yellow: 60,
   orange: 30,
@@ -178,3 +134,11 @@ const colors = {
   pink: 330,
   brown: 30,
 };
+
+clearBtn.addEventListener("click", function(){
+  let form = document.querySelector("form");
+  form.reset();
+  const preservedVariable = localStorage.getItem('maxScore');
+  localStorage.clear();
+  localStorage.setItem('maxScore',preservedVariable);
+});

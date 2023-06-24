@@ -27,7 +27,6 @@ class Car {
 
     if (type != "DUMMY") {
       this.sensor = new Sensor(this,sensorLength,sensorRays,sensorSpread);
-      console.log(intermediatesNeurons);
       this.brain = new NeuralNetwrok([this.sensor.rayCount, ...intermediatesNeurons, 4]);
     }
 
