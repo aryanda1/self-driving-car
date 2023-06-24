@@ -193,10 +193,10 @@ async function start({
     document.querySelector("#canvas").classList.add("hidden");
     document.querySelector("body").classList.add("padding");
   }
-}
-
-function save() {
-  localStorage.setItem("Brain", JSON.stringify(bestCar.brain));
+  function save() {
+    localStorage.setItem("Brain", JSON.stringify(bestCar.brain));
+  }
+  saveBtn.addEventListener('click',save);
 }
 
 
